@@ -1,10 +1,12 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 import PlantForm from '../PlantForm/PlantForm.jsx';
 import PlantList from '../PlantList/PlantList.jsx';
 
 function Table() {
 
 
+    const [shuffledCards, setShuffledCards] = useState([])
 
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
@@ -27,7 +29,7 @@ function Table() {
             [cards[currentOrder], cards[randomShuffle]] = [cards[randomShuffle], cards[currentOrder]]
         }
         console.log('Shuffled cards', cards)
-        return cards;
+        setShuffledCards(cards);
     }
 
 
@@ -41,7 +43,7 @@ function Table() {
       <p>{allCards.join(', ')}</p>
       <button onClick={() => shuffle(allCards)}>Click me to shuffle</button>
         <p></p>
-        <p>{cards}</p>
+        <p>{shuffledCards}</p>
 
       <PlantForm />
       <PlantList />
