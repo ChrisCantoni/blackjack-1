@@ -8,7 +8,8 @@ function Table() {
 
     const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
-
+    const [playerOneHand, setPlayerOneHand] = useState([])
+    const [playerTwoHand, setPlayerTwoHand] = useState([])
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
 
@@ -48,7 +49,19 @@ function Table() {
         setShuffledCards(shuffleDeck);
     }
 
-    const dealCards = ()
+    const dealCards = (deck) => {
+        let card1, card2;
+        for (let i = 0; i < 2; i++) {
+            card1 = deck.shift();
+            console.log('card 1', card1)
+            setPlayerOneHand([...playerOneHand, card1]);
+            console.log(playerOneHand)
+            card2 = deck.shift();
+            setPlayerTwoHand([...playerTwoHand, card2])
+            console.log(playerTwoHand)
+        }
+
+    }
 
 
 
@@ -61,8 +74,11 @@ function Table() {
       <p>{cards.join(', ')}</p> */}
       <button onClick={() => createDeck()}>Click me to create deck</button>
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
+      <button onClick={() => dealCards(shuffledCards)}>Click to deal</button>
         <p>{deck}</p>
         <p>{shuffledCards.join(', ')}</p>
+        <p>Player One hand: {JSON.stringify(playerOneHand)}</p>
+        <p>Player Two hand: {JSON.stringify(playerTwoHand)}</p>
 
       
     </div>
