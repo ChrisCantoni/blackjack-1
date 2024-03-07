@@ -8,8 +8,10 @@ function Table() {
 
     const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
-    const [playerOneHand, setPlayerOneHand] = useState([])
+    const [showCards, setShowCards] = useState(false)
+    const [playerOneHand, setPlayerOneHand] = useState([{suit: 'farts', value: 'Joker'}])
     const [playerTwoHand, setPlayerTwoHand] = useState([])
+    const [welcome, setWelcome] = useState('Welcome!')
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
 
@@ -18,11 +20,13 @@ function Table() {
     // If dealer has 21, game over.
    const refreshPage = () => {
     console.log('refreshing page')
+    console.log('player one hand', playerOneHand)
+    console.log('player two hand', playerTwoHand);
    }
     
     useEffect(() => {
-        refreshPage()
-    }, [shuffledCards])
+        refreshPage();
+    }, [])
 
 
     const createDeck = () => {
@@ -32,35 +36,41 @@ function Table() {
         console.log('clicked')
         for (let card in cards) {
             for (let suit in suits) {
-                console.log('add to deck', cards[card], ' of ', suits[suit]);
-                tempDeck.push(suits[suit] + ' ' + cards[card])                
+                tempDeck.push({suit: suits[suit], value: cards[card]})                
             }
         }
-        setDeck(...deck, tempDeck);
+        setDeck(tempDeck);
     }
         
-    const shuffleDeck = (shuffleDeck) => {   
-        console.log('deck', shuffleDeck) 
-        for (let i = shuffleDeck.length - 1; i > 0; i--) {
+    const shuffleDeck = (shuffled) => {   
+        console.log('deck', shuffled)
+        for (let i = shuffled.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
-            [shuffleDeck[i], shuffleDeck[j]] = [shuffleDeck[j], shuffleDeck[i]]
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
         }
-        console.log('Shuffled cards', shuffleDeck)
-        setShuffledCards(shuffleDeck);
+        console.log('Shuffled cards', shuffled)
+        setShuffledCards(shuffled);
     }
 
     const dealCards = (deck) => {
-        let card1, card2;
-        for (let i = 0; i < 2; i++) {
-            card1 = deck.shift();
-            console.log('card 1', card1)
-            setPlayerOneHand([...playerOneHand, card1]);
-            console.log(playerOneHand)
-            card2 = deck.shift();
-            setPlayerTwoHand([...playerTwoHand, card2])
-            console.log(playerTwoHand)
+        let hand;
+        let i = 0
+        while(i < 2) {
+            hand = deck.shift();
+            console.log('card 1', hand, 'round i', i);
+            setPlayerOneHand([...playerOneHand, hand]);
+            hand = deck.shift();
+            console.log('card 2', hand)
+            setPlayerTwoHand([...playerTwoHand, hand]);
+            i++;
         }
+        console.log('Player one hand', playerOneHand)
+    }
 
+    const checkHands = () => {
+        setShowCards(!showCards)
+        console.log('Player One Hand', playerOneHand)
+        console.log('Player Two Hand', playerTwoHand)
     }
 
 
@@ -72,14 +82,18 @@ function Table() {
       {/* Thanks to redux, there is no need to pass along props! */}
       {/* <p>{suits.join(', ')}</p>
       <p>{cards.join(', ')}</p> */}
+      <h3>{welcome}</h3>
       <button onClick={() => createDeck()}>Click me to create deck</button>
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
       <button onClick={() => dealCards(shuffledCards)}>Click to deal</button>
-        <p>{deck}</p>
-        <p>{shuffledCards.join(', ')}</p>
-        <p>Player One hand: {JSON.stringify(playerOneHand)}</p>
-        <p>Player Two hand: {JSON.stringify(playerTwoHand)}</p>
-
+      <button onClick={() => checkHands()}>Check Hands</button>
+      {showCards ? 
+      <>
+        <p>Player One hand: {JSON.stringify(playerOneHand)}.</p>
+        <p>Player One hand: {playerOneHand.map(card => `${card.value} of ${card.suit}`)}</p>
+        <p>Are we missing any?</p>
+        </>
+        : ' '}
       
     </div>
   )
