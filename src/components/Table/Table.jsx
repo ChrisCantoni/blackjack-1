@@ -9,7 +9,7 @@ function Table() {
     const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
     const [showCards, setShowCards] = useState(false)
-    const [playerOneHand, setPlayerOneHand] = useState([{suit: 'farts', value: 'Joker'}])
+    const [playerOneHand, setPlayerOneHand] = useState([])
     const [playerTwoHand, setPlayerTwoHand] = useState([])
     const [welcome, setWelcome] = useState('Welcome!')
         // TODO: Here will be the shuffle dispatch
