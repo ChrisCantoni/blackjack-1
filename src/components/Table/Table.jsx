@@ -41,7 +41,12 @@ function Table() {
         }
         setDeck(tempDeck);
     }
-        
+
+    const dealRandomCards = () => {
+        return deck[Math.floor(Math.random() * (deck.length - 1))]
+    }
+    
+    
     const shuffleDeck = (shuffled) => {   
         console.log('deck', shuffled)
         for (let i = shuffled.length - 1; i > 0; i--) {
@@ -87,6 +92,7 @@ function Table() {
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
       <button onClick={() => dealCards(shuffledCards)}>Click to deal</button>
       <button onClick={() => checkHands()}>Check Hands</button>
+      <button onClick={() => setPlayerOneHand([...playerOneHand, dealRandomCards()])}>Deal Random Card</button>
       {showCards ? 
       <>
         <p>Player One hand: {JSON.stringify(playerOneHand)}.</p>
