@@ -80,6 +80,10 @@ function Table() {
         }
     };
 
+    const newCard = () => {
+        setPlayerHand(prevHand => [...prevHand, dealRandomCards()])
+    }
+
     const calculateValue = (hand) => {
         console.log('HAND IS', hand)
         let total = 0;
@@ -103,14 +107,6 @@ function Table() {
         }
         return total;
     }
-    
-
-    const checkHands = () => {
-        setShowCards(!showCards)
-        console.log('Player One Hand', dealerHand)
-        console.log('Player Two Hand', playerHand)
-    }
-
 
 
   return(
@@ -122,24 +118,21 @@ function Table() {
       <button onClick={() => createDeck()}>Click me to create deck</button>
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
       <button onClick={() => dealCards()}>Click to deal</button>
-      <button onClick={() => checkHands()}>Check Hands</button>
-      <button onClick={() => setDealerHand([...dealerHand, dealRandomCards()])}>Deal Random Card</button>
-      {showCards ? 
-      <>
+      <button onClick={() => newCard()}>Hit</button>
+      
+      <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
-        <p>Dealer hand: {dealerHand.map((card) => {
-            return (
-                <p>{card.value} of {card.suit}</p>)})}
-        Total: {calculateValue(dealerHand)}
+        <p>Dealer hand: {`${dealerHand[0].value} of ${dealerHand[0].suit}`}
+        {calculateValue(dealerHand) == 21 ? <h2>Blackjack! Dealer wins!</h2> : ''}
         </p>
         <p>Player hand: {JSON.stringify(playerHand)}</p>
         <p>Player hand: {playerHand.map((card) => {
             return (
                 <p>{card.value} of {card.suit}</p>)})}
                 Total: {calculateValue(playerHand)}
+                {calculateValue(playerHand) > 21 ? <h2>You lose!</h2> : <button onClick={() => newCard()}>Hit</button>}
         </p>
-        </>
-        : ' '}
+        </div>
       
     </div>
   )
