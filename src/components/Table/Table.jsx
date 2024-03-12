@@ -17,8 +17,6 @@ function Table() {
 
     // Instead of building a shuffle deck, just draw random cards from the deck, which is the same thing.
 
-    // TODO: Add values to the face cards. Calculate value of hand.
-
     // First build the shuffle here.
     // Deal out two cards to both dealer and player
     // If dealer has 21, game over.
@@ -80,15 +78,19 @@ function Table() {
         }
     };
 
-    const newCard = () => {
+    const hitCard = () => {
         setPlayerHand(prevHand => [...prevHand, dealRandomCards()])
     }
 
+    const playerStay = () => {
+        // trigger dealer actions to hit or stay and determine winner
+        // Separate dealer and player totals into their own states?
+    }
+
     const calculateValue = (hand) => {
-        console.log('HAND IS', hand)
         let total = 0;
         for (let card of hand) {
-            console.log('CARD is', card.value)
+
             if (typeof card.value != 'string') {
                 total += card.value
             }
@@ -108,6 +110,8 @@ function Table() {
         return total;
     }
 
+    // TODO: Add logic for dealer to hit or stay
+
 
   return(
     <div>
@@ -118,19 +122,22 @@ function Table() {
       <button onClick={() => createDeck()}>Click me to create deck</button>
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
       <button onClick={() => dealCards()}>Click to deal</button>
-      <button onClick={() => newCard()}>Hit</button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
-        <p>Dealer hand: {`${dealerHand[0].value} of ${dealerHand[0].suit}`}
+        <p>Dealer hand: {dealerHand.length > 0 ? `${dealerHand[0].value} of ${dealerHand[0].suit}` : ''}
         {calculateValue(dealerHand) == 21 ? <h2>Blackjack! Dealer wins!</h2> : ''}
         </p>
         <p>Player hand: {JSON.stringify(playerHand)}</p>
-        <p>Player hand: {playerHand.map((card) => {
+        <p>Player hand: {playerHand.length > 0 ? playerHand.map((card) => {
             return (
-                <p>{card.value} of {card.suit}</p>)})}
+                <p>{card.value} of {card.suit}</p>)}) : ''}
                 Total: {calculateValue(playerHand)}
-                {calculateValue(playerHand) > 21 ? <h2>You lose!</h2> : <button onClick={() => newCard()}>Hit</button>}
+                {calculateValue(playerHand) > 21 ? <h2>You lose!</h2> : 
+                <>
+                    <button onClick={() => hitCard()}>Hit</button>
+                    <button onClick={() => playerStay()}>Stay</button>
+                </>}
         </p>
         </div>
       
