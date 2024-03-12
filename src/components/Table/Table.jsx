@@ -9,19 +9,23 @@ function Table() {
     const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
     const [showCards, setShowCards] = useState(false)
-    const [playerOneHand, setPlayerOneHand] = useState([])
-    const [playerTwoHand, setPlayerTwoHand] = useState([])
+    const [dealerHand, setDealerHand] = useState([])
+    const [playerHand, setPlayerHand] = useState([])
     const [welcome, setWelcome] = useState('Welcome!')
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
+
+    // Instead of building a shuffle deck, just draw random cards from the deck, which is the same thing.
+
+    // TODO: Add values to the face cards. Calculate value of hand.
 
     // First build the shuffle here.
     // Deal out two cards to both dealer and player
     // If dealer has 21, game over.
    const refreshPage = () => {
     console.log('refreshing page')
-    console.log('player one hand', playerOneHand)
-    console.log('player two hand', playerTwoHand);
+    console.log('player one hand', dealerHand)
+    console.log('player two hand', playerHand);
    }
     
     useEffect(() => {
@@ -39,12 +43,19 @@ function Table() {
                 tempDeck.push({suit: suits[suit], value: cards[card]})                
             }
         }
+        console.log('Deck is', tempDeck)
         setDeck(tempDeck);
     }
 
     const dealRandomCards = () => {
-        return deck[Math.floor(Math.random() * (deck.length - 1))]
-    }
+        const randomIndex = Math.floor(Math.random() * deck.length);
+        const dealtCard = deck[randomIndex];
+    
+        setDeck((prevDeck) => prevDeck.filter((card) => card !== dealtCard));
+    
+        return dealtCard;
+    };
+    
     
     
     const shuffleDeck = (shuffled) => {   
@@ -57,25 +68,47 @@ function Table() {
         setShuffledCards(shuffled);
     }
 
-    const dealCards = (deck) => {
-        let hand;
-        let i = 0
-        while(i < 2) {
-            hand = deck.shift();
-            console.log('card 1', hand, 'round i', i);
-            setPlayerOneHand([...playerOneHand, hand]);
-            hand = deck.shift();
-            console.log('card 2', hand)
-            setPlayerTwoHand([...playerTwoHand, hand]);
-            i++;
+    const dealCards = async () => {
+        for (let i = 0; i < 2; i++) {
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    setPlayerHand(prevHand => [...prevHand, dealRandomCards()]);
+                    setDealerHand(prevHand => [...prevHand, dealRandomCards()]);
+                    resolve();
+                }, 500);
+            });
         }
-        console.log('Player one hand', playerOneHand)
+    };
+
+    const calculateValue = (hand) => {
+        console.log('HAND IS', hand)
+        let total = 0;
+        for (let card of hand) {
+            console.log('CARD is', card.value)
+            if (typeof card.value != 'string') {
+                total += card.value
+            }
+            else {
+                if (card.value !== 'A') {
+                    total += 10
+                }
+                else {
+                    total += 11
+                    if (total > 21) {
+                        total -= 11;
+                        total += 1;
+                    }
+                }
+            }
+        }
+        return total;
     }
+    
 
     const checkHands = () => {
         setShowCards(!showCards)
-        console.log('Player One Hand', playerOneHand)
-        console.log('Player Two Hand', playerTwoHand)
+        console.log('Player One Hand', dealerHand)
+        console.log('Player Two Hand', playerHand)
     }
 
 
@@ -83,21 +116,28 @@ function Table() {
   return(
     <div>
       <h2>This is the Table!</h2>
-      {/* Redux State isn't needed in the garden, it is just a parent component */}
-      {/* Thanks to redux, there is no need to pass along props! */}
       {/* <p>{suits.join(', ')}</p>
       <p>{cards.join(', ')}</p> */}
       <h3>{welcome}</h3>
       <button onClick={() => createDeck()}>Click me to create deck</button>
       <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
-      <button onClick={() => dealCards(shuffledCards)}>Click to deal</button>
+      <button onClick={() => dealCards()}>Click to deal</button>
       <button onClick={() => checkHands()}>Check Hands</button>
-      <button onClick={() => setPlayerOneHand([...playerOneHand, dealRandomCards()])}>Deal Random Card</button>
+      <button onClick={() => setDealerHand([...dealerHand, dealRandomCards()])}>Deal Random Card</button>
       {showCards ? 
       <>
-        <p>Player One hand: {JSON.stringify(playerOneHand)}.</p>
-        <p>Player One hand: {playerOneHand.map(card => `${card.value} of ${card.suit}`)}</p>
-        <p>Are we missing any?</p>
+        <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
+        <p>Dealer hand: {dealerHand.map((card) => {
+            return (
+                <p>{card.value} of {card.suit}</p>)})}
+        Total: {calculateValue(dealerHand)}
+        </p>
+        <p>Player hand: {JSON.stringify(playerHand)}</p>
+        <p>Player hand: {playerHand.map((card) => {
+            return (
+                <p>{card.value} of {card.suit}</p>)})}
+                Total: {calculateValue(playerHand)}
+        </p>
         </>
         : ' '}
       
