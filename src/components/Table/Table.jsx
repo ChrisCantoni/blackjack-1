@@ -7,7 +7,7 @@ import PlantList from '../PlantList/PlantList.jsx';
 function Table() {
 
 
-    const [shuffledCards, setShuffledCards] = useState([])
+    // const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
     const [showCards, setShowCards] = useState(false)
     const [dealerHand, setDealerHand] = useState([])
@@ -57,15 +57,15 @@ function Table() {
     
     
     
-    const shuffleDeck = (shuffled) => {   
-        console.log('deck', shuffled)
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            let j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-        console.log('Shuffled cards', shuffled)
-        setShuffledCards(shuffled);
-    }
+    // const shuffleDeck = (shuffled) => {   
+    //     console.log('deck', shuffled)
+    //     for (let i = shuffled.length - 1; i > 0; i--) {
+    //         let j = Math.floor(Math.random() * (i + 1));
+    //         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    //     }
+    //     console.log('Shuffled cards', shuffled)
+    //     setShuffledCards(shuffled);
+    // }
 
     const dealCards = async () => {
         if (deck.length == 0) {
@@ -140,9 +140,8 @@ function Table() {
       {/* <p>{suits.join(', ')}</p>
       <p>{cards.join(', ')}</p> */}
       <h3>{welcome}</h3>
-      <button onClick={() => createDeck()}>Click me to create deck</button>
-      <button onClick={() => shuffleDeck(deck)}>Click me to shuffle</button>
-      <button onClick={() => dealCards()}>Click to deal</button>
+      <button onClick={() => createDeck()}>Shuffle the deck</button>
+      <button onClick={() => dealCards()}>Deal Cards</button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
