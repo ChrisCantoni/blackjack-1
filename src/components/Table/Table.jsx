@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import PlantForm from '../PlantForm/PlantForm.jsx';
 import PlantList from '../PlantList/PlantList.jsx';
 
@@ -67,6 +68,26 @@ function Table() {
     }
 
     const dealCards = async () => {
+        if (deck.length == 0) {
+            Swal.fire({
+                title: "You haven't shuffled the deck!",
+                text: "You need to click the button that says shuffle the deck",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "I'm lazy, shuffle it for me."
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  createDeck();
+                  Swal.fire({
+                    title: "Shuffled!",
+                    text: "Now try dealing those cards again.",
+                    icon: "success"
+                  });
+                }
+              });
+        } else {
         for (let i = 0; i < 2; i++) {
             await new Promise(resolve => {
                 setTimeout(() => {
@@ -75,7 +96,7 @@ function Table() {
                     resolve();
                 }, 500);
             });
-        }
+        }}
     };
 
     const hitCard = () => {
@@ -126,7 +147,7 @@ function Table() {
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
         <p>Dealer hand: {dealerHand.length > 0 ? `${dealerHand[0].value} of ${dealerHand[0].suit}` : ''}
-        {calculateValue(dealerHand) == 21 ? <h2>Blackjack! Dealer wins!</h2> : ''}
+        {dealerHand.length > 0 && dealerHand[0].value == 'A' && calculateValue(dealerHand) == 21 ? <h2>Blackjack! Dealer wins!</h2> : ''}
         </p>
         <p>Player hand: {JSON.stringify(playerHand)}</p>
         <p>Player hand: {playerHand.length > 0 ? playerHand.map((card) => {
