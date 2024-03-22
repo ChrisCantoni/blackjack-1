@@ -15,6 +15,7 @@ function Table() {
     const [playerStatus, setPlayerStatus] = useState(true)
     const [revealDealer, setRevealDealer] = useState(false);
     const [gameStatus, setGameStatus] = useState(false)
+    const [winner, setWinner] = useState('');
 
     const [cardCount, setCardCount] = useState(0);
         // TODO: Here will be the shuffle dispatch
@@ -98,6 +99,7 @@ function Table() {
         }}
     };
 
+    // This is what happens when a new game is initiated after an existing game is completed.
     const newGame = () => {
         setGameStatus(false);
         setPlayerStatus(true);
@@ -105,6 +107,7 @@ function Table() {
         setDealerHand([])
     }
 
+    // Add a new card to your hand.
     const hitCard = () => {
         setPlayerHand(prevHand => [...prevHand, dealRandomCards()])
     }
@@ -115,6 +118,28 @@ function Table() {
         // Move to next player?
         console.log('reveal dealer')
         setRevealDealer(true);
+        if (calculateValue(dealerHand) < 17) {
+            // If so, keep drawing cards until the hand value is 17 or higher
+            setTimeout(() => {
+                let updatedDealerHand = [...dealerHand];
+                while (calculateValue(updatedDealerHand) < 17) {
+                    updatedDealerHand.push(dealRandomCards());
+                    setDealerHand(updatedDealerHand);
+                }
+            }, 2000); // Adjust delay as needed
+            calculateWinner();
+        } else { calculateWinner();
+        }}
+
+    const calculateWinner = () => {
+        if (calculateValue(playerHand) > calculateValue(dealerHand) && calculateValue(dealerHand) > 21) {
+                setWinner('The player wins! Dealer busts')
+            }
+         else if (calculateValue(playerHand) == calculateValue(dealerHand)) {
+            setWinner("It's a push. No winner.")
+        } else {
+            setWinner('Dealer wins!')
+        }
     }
 
     const calculateValue = (hand) => {
@@ -135,15 +160,6 @@ function Table() {
                     }
                 }}}
         return total;
-    }
-
-    const calculateDealer = (hand) => {
-        let total = 0;
-        if (typeof hand[0].value == 'string') {
-            total += 10;
-        } else {
-            total = hand[0].value;
-        }
     }
 
     const updatePlayerStatus = () => {
@@ -172,14 +188,12 @@ function Table() {
     useEffect(() => {
         updatePlayerStatus()
         countCard()
-        calculateDealer(dealerHand)
     },[playerHand])
 
   return(
     <div>
       <h2>This is the Table!</h2>
-      {/* <p>{suits.join(', ')}</p>
-      <p>{cards.join(', ')}</p> */}
+      <h3>{winner}</h3>
       <button onClick={() => createDeck()}>Shuffle the deck</button>
       <button onClick={() => dealCards()}>Deal Cards</button>
       
@@ -188,7 +202,6 @@ function Table() {
         <p>Dealer hand: {dealerHand.length > 0 && revealDealer ? dealerHand.map((card, index) => (
                         <>{card.value} of {card.suit}{index < dealerHand.length - 1 ? ', ' : ''} </>
                     ))  : dealerHand.length > 0 ? `${dealerHand[0].value} of ${dealerHand[0].suit}` : ''}
-                    <h3>Total: {dealerHand.length > 0 && revealDealer ? calculateValue(dealerHand) : dealerHand.length > 0 ? calculateDealer(dealerHand) : ''}</h3>
                     </p>
 
         <p>Player hand: {playerHand.length > 0 ? playerHand.map((card) => {
