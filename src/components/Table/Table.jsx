@@ -102,6 +102,7 @@ function Table() {
     const newGame = () => {
         setGameStatus(false);
         setPlayerStatus(true);
+        setRevealDealer(false);
         setWinner('');
         setPlayerHand([])
         setDealerHand([])
@@ -130,9 +131,6 @@ function Table() {
             
         }
         setTimeout(() => {
-        calculateValue(dealerHand)}, 500);
-        setTimeout(() => {
-            console.log(calculateValue(dealerHand));
             calculateWinner()}, 1500);
         }
 
@@ -215,6 +213,14 @@ function Table() {
         }
         setCardCount(count);
     }
+
+    useEffect(() => {
+        const dealerTotal = calculateValue(dealerHand);
+        console.log('dealer total', dealerTotal);
+        if (revealDealer && dealerHand.length > 0) {
+            setTimeout(() => calculateWinner(), 1500);
+        }
+    }, [dealerHand, revealDealer]);
 
 
     useEffect(() => {
