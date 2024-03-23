@@ -88,6 +88,7 @@ function Table() {
               });
         } else {
             setGameStatus(true);
+            newGame();
         for (let i = 0; i < 2; i++) {
             await new Promise(resolve => {
                 setTimeout(() => {
@@ -126,15 +127,20 @@ function Table() {
                     updatedDealerHand.push(dealRandomCards());
                     setDealerHand(updatedDealerHand);
                 }
-            }, 2000); // Adjust delay as needed
-            calculateWinner();
-        } else { calculateWinner();
-        }}
+            }, 1000); // Adjust delay as needed
+            
+        }
+        setTimeout(() => {
+        calculateWinner()}, 1500);
+        }
 
     const calculateWinner = () => {
         if (calculateValue(playerHand) > calculateValue(dealerHand) && calculateValue(dealerHand) > 21) {
-                setWinner('The player wins! Dealer busts')
+                setWinner('Player wins! Dealer busts.')
             }
+        else if (calculateValue(playerHand) > calculateValue(dealerHand)) {
+            setWinner('Player wins!')
+        }
          else if (calculateValue(playerHand) == calculateValue(dealerHand)) {
             setWinner("It's a push. No winner.")
         } else {
@@ -144,21 +150,22 @@ function Table() {
 
     const calculateValue = (hand) => {
         let total = 0;
+        let ace = hand.find((card) => card.value === 'A')
         for (let card of hand) {
             if (typeof card.value != 'string') {
                 total += card.value
             }
             else {
-                if (card.value !== 'A') {
-                    total += 10
+                if (ace) {
+                    total += 11
                 }
                 else {
-                    total += 11
-                    if (total > 21) {
-                        total -= 11;
-                        total += 1;
-                    }
+                    total += 10;
                 }}}
+            if (total > 21 && ace) {
+                console.log('Ace check', total)
+                total -= 10;
+            }
         return total;
     }
 
@@ -166,10 +173,6 @@ function Table() {
         if (calculateValue(playerHand) > 21) {
             setPlayerStatus(!playerStatus)
         }
-    }
-
-    const updateDealerStatus = () => {
-
     }
 
     const countCard = () => {
@@ -196,6 +199,7 @@ function Table() {
       <h3>{winner}</h3>
       <button onClick={() => createDeck()}>Shuffle the deck</button>
       <button onClick={() => dealCards()}>Deal Cards</button>
+      <button onClick={() => newGame()}>New Game</button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
@@ -213,7 +217,7 @@ function Table() {
                     <button onClick={() => playerStay()}>Stay</button>
                 </> :
                 <>
-                    <h2>You Lose!</h2>
+                    <h2>Bust!</h2>
                     <button onClick={() => newGame()}>New Game</button>
                 </>
                 }
