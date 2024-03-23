@@ -9,14 +9,12 @@ function Table() {
 
     // const [shuffledCards, setShuffledCards] = useState([])
     const [deck, setDeck] = useState([])
-    const [showCards, setShowCards] = useState(false)
     const [dealerHand, setDealerHand] = useState([])
     const [playerHand, setPlayerHand] = useState([])
-    const [playerStatus, setPlayerStatus] = useState(true)
+    const [playerStatus, setPlayerStatus] = useState(false)
     const [revealDealer, setRevealDealer] = useState(false);
     const [gameStatus, setGameStatus] = useState(false)
     const [winner, setWinner] = useState('');
-
     const [cardCount, setCardCount] = useState(0);
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
@@ -104,6 +102,7 @@ function Table() {
     const newGame = () => {
         setGameStatus(false);
         setPlayerStatus(true);
+        setWinner('');
         setPlayerHand([])
         setDealerHand([])
     }
@@ -127,26 +126,43 @@ function Table() {
                     updatedDealerHand.push(dealRandomCards());
                     setDealerHand(updatedDealerHand);
                 }
-            }, 1000); // Adjust delay as needed
+            }, 500); // Adjust delay as needed
             
         }
         setTimeout(() => {
-        calculateWinner()}, 1500);
+        calculateValue(dealerHand)}, 500);
+        setTimeout(() => {
+            console.log(calculateValue(dealerHand));
+            calculateWinner()}, 1500);
         }
 
-    const calculateWinner = () => {
-        if (calculateValue(playerHand) > calculateValue(dealerHand) && calculateValue(dealerHand) > 21) {
-                setWinner('Player wins! Dealer busts.')
+        const calculateWinner = () => {
+            const playerTotal = calculateValue(playerHand);
+            const dealerTotal = calculateValue(dealerHand);
+        
+            if (playerTotal > 21) {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setWinner('Dealer wins! Player busts.');
+            } else if (dealerTotal > 21) {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setWinner('Player wins! Dealer busts.');
+            } else if (playerTotal > dealerTotal) {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setWinner('Player wins!');
+            } else if (playerTotal === dealerTotal) {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setWinner("It's a push. No winner.");
+            } else {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setWinner('Dealer wins!');
             }
-        else if (calculateValue(playerHand) > calculateValue(dealerHand)) {
-            setWinner('Player wins!')
         }
-         else if (calculateValue(playerHand) == calculateValue(dealerHand)) {
-            setWinner("It's a push. No winner.")
-        } else {
-            setWinner('Dealer wins!')
-        }
-    }
+        
 
     const calculateValue = (hand) => {
         let total = 0;
@@ -175,6 +191,19 @@ function Table() {
         }
     }
 
+    const cardSuit = (suit) => {
+        switch (suit) {
+            case 'Hearts' :
+                return String.fromCharCode(9829);
+            case 'Diamonds' :
+                return String.fromCharCode(9830);
+            case 'Spades' :
+                return String.fromCharCode(9824);
+            case 'Clubs' :
+                return String.fromCharCode(9827);
+        }
+    }
+
     const countCard = () => {
         let count = cardCount;
         for (let card of playerHand) {
@@ -199,27 +228,23 @@ function Table() {
       <h3>{winner}</h3>
       <button onClick={() => createDeck()}>Shuffle the deck</button>
       <button onClick={() => dealCards()}>Deal Cards</button>
-      <button onClick={() => newGame()}>New Game</button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
-        <p>Dealer hand: {dealerHand.length > 0 && revealDealer ? dealerHand.map((card, index) => (
-                        <>{card.value} of {card.suit}{index < dealerHand.length - 1 ? ', ' : ''} </>
-                    ))  : dealerHand.length > 0 ? `${dealerHand[0].value} of ${dealerHand[0].suit}` : ''}
+        <p>Dealer hand: <br></br> {dealerHand.length > 0 && revealDealer ? dealerHand.map((card, index) => (
+                        <>{card.value}{cardSuit(card.suit)}{index < dealerHand.length - 1 ? ', ' : ''} </>
+                    ))  : dealerHand.length > 0 ? `${dealerHand[0].value} of ${cardSuit(dealerHand[0].suit)}` : ''}
                     </p>
 
         <p>Player hand: {playerHand.length > 0 ? playerHand.map((card) => {
             return (
-                <>{card.value} of {card.suit} </>)}) : ''}
+                <h4>{card.value}{cardSuit(card.suit)} </h4>)}) : ''}
                 Total: {calculateValue(playerHand)}
+                {calculateValue(playerHand) > 21 ? <h4>BUST!</h4> : ''}
                 {playerStatus ? <>
                     <button onClick={() => hitCard()}>Hit</button>
                     <button onClick={() => playerStay()}>Stay</button>
-                </> :
-                <>
-                    <h2>Bust!</h2>
-                    <button onClick={() => newGame()}>New Game</button>
-                </>
+                </> : ''
                 }
         </p>
         <h3>Current Card Count: {cardCount}</h3>
