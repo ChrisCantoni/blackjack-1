@@ -51,8 +51,6 @@ function Table() {
     }
 
     const dealRandomCards = () => {
-        let count = cardCount;
-        console.log('Count at start', count)
         console.log('Card Count at start', cardCount)
         const randomIndex = Math.floor(Math.random() * deck.length);
         const dealtCard = deck[randomIndex];
@@ -60,15 +58,11 @@ function Table() {
         setDeck((prevDeck) => prevDeck.filter((card) => card !== dealtCard));
     
         if (typeof dealtCard.value != 'string' && dealtCard.value < 10) {
-                 count +=1;
-                 console.log('number card count', count)
+                 setCardCount(prevCount => prevCount + 1)
             } else {
-                count -=1;
-                console.log('Face card count', count)
+                setCardCount(prevCount => prevCount -1)
             }
-        console.log('Dealt card', dealtCard, count)
-        setCardCount(count);
-
+            console.log('End deal card count', cardCount)
         return dealtCard;
     };
     
