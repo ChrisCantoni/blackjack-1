@@ -51,11 +51,24 @@ function Table() {
     }
 
     const dealRandomCards = () => {
+        let count = cardCount;
+        console.log('Count at start', count)
+        console.log('Card Count at start', cardCount)
         const randomIndex = Math.floor(Math.random() * deck.length);
         const dealtCard = deck[randomIndex];
     
         setDeck((prevDeck) => prevDeck.filter((card) => card !== dealtCard));
     
+        if (typeof dealtCard.value != 'string' && dealtCard.value < 10) {
+                 count +=1;
+                 console.log('number card count', count)
+            } else {
+                count -=1;
+                console.log('Face card count', count)
+            }
+        console.log('Dealt card', dealtCard, count)
+        setCardCount(count);
+
         return dealtCard;
     };
     
@@ -202,17 +215,33 @@ function Table() {
         }
     }
 
-    const countCard = () => {
-        let count = cardCount;
-        for (let card of playerHand) {
-            if (typeof card.value != 'string' && card.value < 10) {
-                count +=1;
-            } else {
-                count -=1;
-            }
-        }
-        setCardCount(count);
-    }
+    // const countCard = () => {
+    //     let count = cardCount;
+    //     for (let card of playerHand) {
+            
+    //         if (typeof card.value != 'string' && card.value < 10) {
+    //             count +=1;
+    //         } else {
+    //             count -=1;
+    //         }
+    //         console.log('Counting player hand', card, count)
+    //     }
+
+    //     if (revealDealer) {
+    //         for (let card of dealerHand) {
+                
+    //             if (typeof card.value != 'string' && card.value < 10) {
+    //                 count +=1;
+    //             } else {
+    //                 count -=1;
+    //             }
+    //             console.log('Counting dealer hand', card, count)
+    //         }
+    //     }
+    //     console.log('Count is', count)
+    //     setCardCount(count);
+    // }
+    
 
     useEffect(() => {
         const dealerTotal = calculateValue(dealerHand);
@@ -222,11 +251,18 @@ function Table() {
         }
     }, [dealerHand, revealDealer]);
 
+    useEffect(() => {
+        const count = cardCount;
+        setTimeout(() => {
+            console.log('updated card count:', count)
+        }, 0)
+    }, [cardCount])
+
 
     useEffect(() => {
         updatePlayerStatus()
-        countCard()
-    },[playerHand])
+        // countCard()
+    },[playerHand, dealerHand])
 
   return(
     <div>
