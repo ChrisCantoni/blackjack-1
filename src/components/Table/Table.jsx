@@ -16,8 +16,8 @@ function Table() {
     const [gameStatus, setGameStatus] = useState(false)
     const [winner, setWinner] = useState('');
     const [cardCount, setCardCount] = useState(0);
-    const [playerMoney, setPlayerMoney] = useState(100);
-    const [totalBet, setTotalBet] = useState(5);
+    const [playerMoney, setPlayerMoney] = useState(500);
+    const [totalBet, setTotalBet] = useState(10);
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
 
@@ -115,13 +115,15 @@ function Table() {
         setWinner('');
         setPlayerHand([])
         setDealerHand([])
-        setPlayerMoney(playerMoney - 5)
-        setTotalBet(10)
+        setPlayerMoney(playerMoney - 10)
+        setTotalBet(20)
     }
 
-    const playerBet = () => {
-        setPlayerMoney(playerMoney - 5)
-        setTotalBet(totalBet + 5)
+    const doubleDown = () => {
+        setPlayerMoney(playerMoney - 10)
+        setTotalBet(totalBet + 10)
+        hitCard();
+        playerStay();
     } 
 
     // Add a new card to your hand.
@@ -295,7 +297,8 @@ function Table() {
                 {playerStatus ? <>
                     <button onClick={() => hitCard()}>Hit</button>
                     <button onClick={() => playerStay()}>Stand</button>
-                    <button onClick={() => playerBet()}>Bet</button>
+                    {playerHand.length > 1 && (calculateValue(playerHand) == 9 || calculateValue(playerHand) == 10 || calculateValue(playerHand) == 11) ? 
+                    <button onClick={() => doubleDown()}>Double Down</button> : ''}
                 </> : ''
                 }
         </p>
