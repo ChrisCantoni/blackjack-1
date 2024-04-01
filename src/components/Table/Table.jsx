@@ -17,6 +17,7 @@ function Table() {
     const [winner, setWinner] = useState('');
     const [cardCount, setCardCount] = useState(0);
     const [playerMoney, setPlayerMoney] = useState(100);
+    const [totalBet, setTotalBet] = useState(5);
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
 
@@ -114,10 +115,13 @@ function Table() {
         setWinner('');
         setPlayerHand([])
         setDealerHand([])
+        setPlayerMoney(playerMoney - 5)
+        setTotalBet(10)
     }
 
     const playerBet = () => {
         setPlayerMoney(playerMoney - 5)
+        setTotalBet(totalBet + 5)
     } 
 
     // Add a new card to your hand.
@@ -158,10 +162,14 @@ function Table() {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
                 setWinner('Player wins! Dealer busts.');
+                setPlayerMoney(playerMoney + totalBet);
+                console.log('total bet', totalBet)
             } else if (playerTotal > dealerTotal) {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
                 setWinner('Player wins!');
+                setPlayerMoney(playerMoney + totalBet);
+                console.log('total bet', totalBet)
             } else if (playerTotal === dealerTotal) {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
@@ -176,8 +184,10 @@ function Table() {
 
     const calculateValue = (hand) => {
         let total = 0;
-        let ace = hand.find((card) => card.value === 'A')
+        let ace;
         for (let card of hand) {
+            if (card.value === 'A') {
+                ace = true}
             if (typeof card.value != 'string') {
                 total += card.value
             }
@@ -284,7 +294,7 @@ function Table() {
                 {calculateValue(playerHand) > 21 ? <h4>BUST!</h4> : ''}
                 {playerStatus ? <>
                     <button onClick={() => hitCard()}>Hit</button>
-                    <button onClick={() => playerStay()}>Stay</button>
+                    <button onClick={() => playerStay()}>Stand</button>
                     <button onClick={() => playerBet()}>Bet</button>
                 </> : ''
                 }
