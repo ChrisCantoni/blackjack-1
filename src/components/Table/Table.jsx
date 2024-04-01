@@ -149,6 +149,7 @@ function Table() {
             
         }
         setTimeout(() => {
+            console.log('calculating winner')
             calculateWinner()}, 1500);
         }
 
@@ -159,23 +160,21 @@ function Table() {
             if (playerTotal > 21) {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
-                setWinner('Dealer wins! Player busts.');
+                 setWinner('Dealer wins! Player busts.');
             } else if (dealerTotal > 21) {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
+                setPlayerMoney(playerMoney + totalBet);
                 setWinner('Player wins! Dealer busts.');
-                setPlayerMoney(playerMoney + totalBet);
-                console.log('total bet', totalBet)
-            } else if (playerTotal > dealerTotal) {
-                console.log('player total', playerTotal)
-                console.log('dealer total', dealerTotal)
-                setWinner('Player wins!');
-                setPlayerMoney(playerMoney + totalBet);
-                console.log('total bet', totalBet)
             } else if (playerTotal === dealerTotal) {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
-                setWinner("It's a push. No winner.");
+                setWinner("It's a push. No winner."); 
+            } else if (playerTotal > dealerTotal) {
+                console.log('player total', playerTotal)
+                console.log('dealer total', dealerTotal)
+                setPlayerMoney(playerMoney + totalBet);
+                setWinner(`Player wins!, dealer total: ${dealerTotal}`); 
             } else {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
@@ -259,6 +258,8 @@ function Table() {
         console.log('dealer total', dealerTotal);
         if (revealDealer && dealerHand.length > 0) {
             setTimeout(() => calculateWinner(), 1500);
+        } else if (dealerTotal === 21) {
+            setTimeout(() => playerStay(), 1500);
         }
     }, [dealerHand, revealDealer]);
 
