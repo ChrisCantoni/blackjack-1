@@ -1,8 +1,8 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import PlantForm from '../PlantForm/PlantForm.jsx';
-import PlantList from '../PlantList/PlantList.jsx';
+import Button from '@mui/material/Button'
+import {Card, CardContent, Typography} from '@mui/material'
 
 function Table() {
 
@@ -280,26 +280,49 @@ function Table() {
     <div>
       <h2>This is the Table!</h2>
       <h3>{winner}</h3>
-      <button onClick={() => createDeck()}>Shuffle the deck</button>
-      <button onClick={() => dealCards()}>Deal Cards</button>
+      <Button variant="contained" onClick={() => createDeck()}>Shuffle the deck</Button>
+      <Button variant="contained" onClick={() => dealCards()}>Deal Cards</Button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
-        <p>Dealer hand: <br></br> {dealerHand.length > 0 && revealDealer ? dealerHand.map((card, index) => (
-                        <>{card.value}{cardSuit(card.suit)}{index < dealerHand.length - 1 ? ', ' : ''} </>
-                    ))  : dealerHand.length > 0 ? `${dealerHand[0].value} of ${cardSuit(dealerHand[0].suit)}` : ''}
-                    </p>
+        <p>Dealer hand: <br></br> <div className="dealerHand">{dealerHand.length > 0 && revealDealer ? dealerHand.map((card, i) => (
+                        <div key={i}>
+                        <Card sx={{width: 100}}>
+                            <CardContent>
+                                <Typography variant="h3" color={card.suit == "Hearts" || card.suit == "Diamonds" ? "red" : 'black'}>
+                                    {card.value}{cardSuit(card.suit)}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                        </div>
+                    ))  : dealerHand.length > 0 ? 
+                                <Card sx={{width: 100}}>
+                                    <CardContent>
+                                        <Typography variant="h3" color={dealerHand[0].suit == 'Hearts' || dealerHand[0].suit == 'Diamonds' ? 'red' : 'black'}>
+                                            {dealerHand[0].value}{cardSuit(dealerHand[0].suit)}
+                                        </Typography>
+                                    </CardContent>
+                                </Card> : ''}
+                                </div></p>
 
-        <p>Player hand: {playerHand.length > 0 ? playerHand.map((card) => {
+        <p>Player hand: 
+            <div className="playerHand">{playerHand.length > 0 ? playerHand.map((card) => {
             return (
-                <h4>{card.value}{cardSuit(card.suit)} </h4>)}) : ''}
+                <Card sx={{width: 100}}>
+                    <CardContent>
+                        <Typography variant="h3" color={card.suit == "Hearts" || card.suit == "Diamonds" ? "red" : 'black'}>
+                            {card.value}{cardSuit(card.suit)} 
+                        </Typography>
+                    </CardContent>
+                </Card>)}) : ''}
+                </div>
                 Total: {calculateValue(playerHand)}
                 {calculateValue(playerHand) > 21 ? <h4>BUST!</h4> : ''}
                 {playerStatus ? <>
-                    <button onClick={() => hitCard()}>Hit</button>
-                    <button onClick={() => playerStay()}>Stand</button>
+                    <Button variant="contained" onClick={() => hitCard()}>Hit</Button>
+                    <Button variant="contained" onClick={() => playerStay()}>Stand</Button>
                     {playerHand.length > 1 && (calculateValue(playerHand) == 9 || calculateValue(playerHand) == 10 || calculateValue(playerHand) == 11) ? 
-                    <button onClick={() => doubleDown()}>Double Down</button> : ''}
+                    <Button variant="contained" onClick={() => doubleDown()}>Double Down</Button> : ''}
                 </> : ''
                 }
         </p>
