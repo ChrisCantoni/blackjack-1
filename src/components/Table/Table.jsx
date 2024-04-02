@@ -2,7 +2,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import Button from '@mui/material/Button'
-import {Card, CardContent, Typography} from '@mui/material'
+import {Card, CardContent, Typography, Tooltip} from '@mui/material';
+import InfoModal from '../InfoModal/InfoModal.jsx';
 
 function Table() {
 
@@ -18,6 +19,7 @@ function Table() {
     const [cardCount, setCardCount] = useState(0);
     const [playerMoney, setPlayerMoney] = useState(500);
     const [totalBet, setTotalBet] = useState(10);
+    const [toggleInfo, setToggleInfo] = useState(false);
         // TODO: Here will be the shuffle dispatch
     // Shuffle itself will happen on the back end, yes?
 
@@ -280,8 +282,17 @@ function Table() {
     <div>
       <h2>This is the Table!</h2>
       <h3>{winner}</h3>
-      <Button variant="contained" onClick={() => createDeck()}>Shuffle the deck</Button>
-      <Button variant="contained" onClick={() => dealCards()}>Deal Cards</Button>
+      <Tooltip title={`There are ${deck.length} cards left in the deck`}>
+        <Button variant="contained" onClick={() => createDeck()}>
+            Shuffle the deck
+        </Button>
+      </Tooltip>
+      <Button variant="contained" onClick={() => dealCards()}>
+        Deal Cards
+      </Button>
+      <Button variant="contained" onClick={() => setToggleInfo(!toggleInfo)}>
+        Info
+      </Button>
       
       <div>
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
@@ -329,6 +340,7 @@ function Table() {
         <h3>Available money: {playerMoney}</h3>
         {/* <h3>Current Card Count: {cardCount}</h3> */}
         </div>
+        {toggleInfo && <InfoModal closeModal={() => {setToggleInfo(!toggleInfo)}}/>}
       
     </div>
   )
