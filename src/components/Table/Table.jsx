@@ -130,13 +130,18 @@ function Table() {
 
     // Add a new card to your hand.
     const hitCard = () => {
+        if (!revealDealer) {
         setPlayerHand(prevHand => [...prevHand, dealRandomCards()])
+        } else {
+            Swal.fire('This hand is over!')
+        }
     }
 
     const playerStay = () => {
         // trigger dealer actions to hit or stay and determine winner
         // Separate dealer and player totals into their own states?
         // Move to next player?
+        if (!revealDealer) {
         console.log('reveal dealer')
         setRevealDealer(true);
         if (calculateValue(dealerHand) < 17) {
@@ -154,6 +159,10 @@ function Table() {
             console.log('calculating winner')
             calculateWinner()}, 1500);
         }
+        else {
+            Swal.fire('This hand is over!')
+        }
+    }
 
         const calculateWinner = () => {
             const playerTotal = calculateValue(playerHand);
@@ -183,6 +192,7 @@ function Table() {
                 setWinner('Dealer wins!');
             }
         }
+       
         
 
     const calculateValue = (hand) => {
@@ -272,6 +282,13 @@ function Table() {
         }, 0)
     }, [cardCount])
 
+    const buttonStyle = {
+        backgroundColor: '#48a6cd',
+        color: 'white',
+        "&:hover": {
+            backgroundColor: '#332c7b'
+        }
+    }
 
     useEffect(() => {
         updatePlayerStatus()
@@ -282,7 +299,7 @@ function Table() {
     <div>
       <h2>This is the Table!</h2>
       <h3>{winner}</h3>
-      <Tooltip title={`There are ${deck.length} cards left in the deck`}>
+      <Tooltip title={`There are ${deck.length} cards in the deck`}>
         <Button variant="contained" onClick={() => createDeck()}>
             Shuffle the deck
         </Button>
@@ -298,7 +315,7 @@ function Table() {
         <p>Dealer hand: {JSON.stringify(dealerHand)}.</p>
         <p>Dealer hand: <br></br> <div className="dealerHand">{dealerHand.length > 0 && revealDealer ? dealerHand.map((card, i) => (
                         <div key={i}>
-                        <Card sx={{width: 100}}>
+                        <Card sx={{width: 100, height: 150, margin: 2}} className={card.suit == "Hearts" || card.suit == "Diamonds" ? 'redCard' : 'blackCard'}>
                             <CardContent>
                                 <Typography variant="h3" color={card.suit == "Hearts" || card.suit == "Diamonds" ? "red" : 'black'}>
                                     {card.value}{cardSuit(card.suit)}
@@ -307,7 +324,7 @@ function Table() {
                         </Card>
                         </div>
                     ))  : dealerHand.length > 0 ? 
-                                <Card sx={{width: 100}}>
+                                <Card sx={{width: 100, height: 150, margin: 2}} className={dealerHand[0].suit == 'Hearts' || dealerHand[0].suit == 'Diamonds' ? 'redCard' : 'blackCard'}>
                                     <CardContent>
                                         <Typography variant="h3" color={dealerHand[0].suit == 'Hearts' || dealerHand[0].suit == 'Diamonds' ? 'red' : 'black'}>
                                             {dealerHand[0].value}{cardSuit(dealerHand[0].suit)}
@@ -319,8 +336,8 @@ function Table() {
         <p>Player hand: 
             <div className="playerHand">{playerHand.length > 0 ? playerHand.map((card) => {
             return (
-                <Card sx={{width: 100}}>
-                    <CardContent>
+                <Card sx={{width: 100, height: 150, margin: 2}} className={card.suit == "Hearts" || card.suit == "Diamonds" ? 'redCard' : 'blackCard'}>
+                    <CardContent sx={{justifyContent: 'center'}}>
                         <Typography variant="h3" color={card.suit == "Hearts" || card.suit == "Diamonds" ? "red" : 'black'}>
                             {card.value}{cardSuit(card.suit)} 
                         </Typography>
