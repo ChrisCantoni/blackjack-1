@@ -197,7 +197,7 @@ function Table() {
 
     const calculateValue = (hand) => {
         let total = 0;
-        let ace;
+        let ace = false;
         for (let card of hand) {
             if (card.value === 'A') {
                 ace = true}
@@ -207,6 +207,7 @@ function Table() {
             else {
                 if (ace) {
                     total += 11
+                    ace = false;
                 }
                 else {
                     total += 10;
