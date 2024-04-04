@@ -300,9 +300,9 @@ function Table() {
     <div>
       <h2>This is the Table!</h2>
       <h3>{winner}</h3>
-      <Tooltip title={`There are ${deck.length} cards in the deck`}>
+      <Tooltip title={`There are ${deck.length} cards in the Shoe`}>
         <Button variant="contained" onClick={() => createDeck()}>
-            Shuffle the deck
+            Shuffle the Shoe
         </Button>
       </Tooltip>
       <Button variant="contained" onClick={() => dealCards()}>
