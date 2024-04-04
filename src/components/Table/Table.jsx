@@ -197,22 +197,22 @@ function Table() {
 
     const calculateValue = (hand) => {
         let total = 0;
-        let ace = false;
+        let ace = 0;
         for (let card of hand) {
             if (card.value === 'A') {
-                ace = true}
+                ace += 1}
             if (typeof card.value != 'string') {
                 total += card.value
             }
             else {
-                if (ace) {
+                if (ace == 1) {
                     total += 11
-                    ace = false;
+                    ace += 1
                 }
                 else {
                     total += 10;
                 }}}
-            if (total > 21 && ace) {
+            if (total > 21 && ace > 0) {
                 console.log('Ace check', total)
                 total -= 10;
             }
@@ -237,34 +237,6 @@ function Table() {
                 return String.fromCharCode(9827);
         }
     }
-
-    // const countCard = () => {
-    //     let count = cardCount;
-    //     for (let card of playerHand) {
-            
-    //         if (typeof card.value != 'string' && card.value < 10) {
-    //             count +=1;
-    //         } else {
-    //             count -=1;
-    //         }
-    //         console.log('Counting player hand', card, count)
-    //     }
-
-    //     if (revealDealer) {
-    //         for (let card of dealerHand) {
-                
-    //             if (typeof card.value != 'string' && card.value < 10) {
-    //                 count +=1;
-    //             } else {
-    //                 count -=1;
-    //             }
-    //             console.log('Counting dealer hand', card, count)
-    //         }
-    //     }
-    //     console.log('Count is', count)
-    //     setCardCount(count);
-    // }
-    
 
     useEffect(() => {
         const dealerTotal = calculateValue(dealerHand);
