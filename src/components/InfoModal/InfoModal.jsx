@@ -20,7 +20,7 @@ function InfoModal({closeModal}) {
                     If you're unfamiliar with Blackjack, it's very simple. You receive cards trying to get as
                     close to 21 as possible without going over. Each card is worth its number except for face cards: K, Q, J which are all worth 10.
                     Aces can be worth 11 or 1. So getting an ace and a 7 would be worth 18, but if you put a five with it, the Ace becomes
-                    a 1 and you end up with 13. You receive 2 cards to start and from there you can either receive another card, <strong>hit</strong>, or stop with the hand you have,<strong>stay</strong>.
+                    a 1 and you end up with 13.</p> <p>You receive 2 cards to start and from there you can either receive another card, <strong>hit</strong>, or stop with the hand you have, <strong>stay</strong>.
                 </p>
 
                 <p>Only one of the dealer's cards is revealed to start, however the dealer will immediately let you know if they have <strong>Blackjack</strong> and you will simply lose

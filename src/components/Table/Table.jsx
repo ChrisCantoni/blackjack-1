@@ -104,7 +104,7 @@ function Table() {
                     setPlayerHand(prevHand => [...prevHand, dealRandomCards()]);
                     setDealerHand(prevHand => [...prevHand, dealRandomCards()]);
                     resolve();
-                }, 500);
+                }, 800);
             });
         }}
     };
@@ -164,6 +164,7 @@ function Table() {
         }
     }
 
+    // Displays the winner at the end of each hand
         const calculateWinner = () => {
             const playerTotal = calculateValue(playerHand);
             const dealerTotal = calculateValue(dealerHand);
@@ -185,7 +186,7 @@ function Table() {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
                 setPlayerMoney(playerMoney + totalBet);
-                setWinner(`Player wins!, dealer total: ${dealerTotal}`); 
+                setWinner(`Player wins!`); 
             } else {
                 console.log('player total', playerTotal)
                 console.log('dealer total', dealerTotal)
@@ -205,7 +206,7 @@ function Table() {
                 total += card.value
             }
             else {
-                if (ace == 1) {
+                if (ace === 1) {
                     total += 11
                     ace += 1
                 }
@@ -225,6 +226,7 @@ function Table() {
         }
     }
 
+// Provides the proper symbol for each suit
     const cardSuit = (suit) => {
         switch (suit) {
             case 'Hearts' :
@@ -245,27 +247,13 @@ function Table() {
             setTimeout(() => calculateWinner(), 1500);
         } else if (dealerTotal === 21) {
             setTimeout(() => playerStay(), 1500);
+            setWinner('Blackjack! Dealer wins!')
         }
     }, [dealerHand, revealDealer]);
 
-    useEffect(() => {
-        const count = cardCount;
-        setTimeout(() => {
-            console.log('updated card count:', count)
-        }, 0)
-    }, [cardCount])
-
-    const buttonStyle = {
-        backgroundColor: '#48a6cd',
-        color: 'white',
-        "&:hover": {
-            backgroundColor: '#332c7b'
-        }
-    }
 
     useEffect(() => {
         updatePlayerStatus()
-        // countCard()
     },[playerHand, dealerHand])
 
   return(
@@ -317,7 +305,7 @@ function Table() {
                     </CardContent>
                 </Card>)}) : ''}
                 </div>
-                Total: {calculateValue(playerHand)}
+                <h4>Total: {calculateValue(playerHand)}</h4>
                 {calculateValue(playerHand) > 21 ? <h4>BUST!</h4> : ''}
                 {playerStatus ? <>
                     <Button variant="contained" onClick={() => hitCard()}>Hit</Button>
